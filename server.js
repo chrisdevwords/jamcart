@@ -6,7 +6,12 @@ var path = require('path'),
     swig = require('swig'),
     routes = require('./app/routes/index'),
     ngrok = require('ngrok'),
+    nconf = require('nconf'),
     app = express();
+
+nconf.argv()
+    .env()
+    .file(path.join(__dirname, 'config.json'));
 
 // set views to render with swig
 app.engine('swig', swig.renderFile);
@@ -43,6 +48,8 @@ app.listen(app.get('port'), function () {
         if (err) {
             console.error('Error exposing local server via ngrok' , err);
         } else {
+            nconf.set('ngrokUrl', url);
+            console.log(nconf.get('ngrokUrl'))
             console.log('Exposed via ngrok at ', url);
         }
     });

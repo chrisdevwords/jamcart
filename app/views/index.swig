@@ -10,6 +10,7 @@
     <link href="//maxcdn.bootstrapcdn.com/bootswatch/3.3.2/cyborg/bootstrap.min.css" rel="stylesheet"></head>
 <body>
     <div class="site-wrapper">
-        <h1>Oh hey.</h1>
+        <h1>Jam Cart.</h1>
+        <p>This local server is accessible publicly at: <a href="{{ ngrokUrl }}">{{ ngrokUrl }}</a></p>
     </div>
 </body>
