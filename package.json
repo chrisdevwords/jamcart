@@ -1,0 +1,38 @@
+{
+  "name": "jamcart",
+  "version": "0.0.1",
+  "description": "Control spotify via a local node.js server, accessible via ngrok",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/chrisdevwords/jamcart.git"
+  },
+  "keywords": [
+    "spotify",
+    "node",
+    "express",
+    "ngrok",
+    "applescript"
+  ],
+  "author": "chrisdevwords <chrisdevwords@yahoo.com> (http://github.com/chrisdevwords/)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/chrisdevwords/jamcart/issues"
+  },
+  "homepage": "https://github.com/chrisdevwords/jamcart",
+  "dependencies": {
+    "applescript": "^1.0.0",
+    "body-parser": "^1.13.1",
+    "cookie-parser": "^1.3.5",
+    "express": "^4.12.4",
+    "hipchat-bot": "^1.0.0",
+    "jquery-deferred": "^0.3.0",
+    "morgan": "^1.6.0",
+    "ngrok": "^0.1.99",
+    "swig": "^1.4.2",
+    "underscore": "^1.8.3"
+  }
+}
