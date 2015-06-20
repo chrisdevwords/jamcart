@@ -1,9 +1,10 @@
 var HipChatBot = require('hipchat-bot');
 var _ = require('underscore');
-var applescript = require('applescript');
+var spotify = require('./spotify-control');
 
 var SpotBot = function (slug) {
     this.slug = slug || '/spot';
+    this.queue = [];
 };
 
 _.extend(SpotBot.prototype, HipChatBot.prototype);
@@ -11,7 +12,10 @@ _.extend(SpotBot.prototype, HipChatBot.prototype);
 SpotBot.prototype.parseReq = function (reqData) {
     var _this = this;
     var def = HipChatBot.Deferred();
-    this.playSong()
+    var msg = this.stripSlug(this.getMessageText(reqData), this.slug);
+    var command = this.getCommand(msg);
+
+    spotify.play(msg)
         .done(function (data){
             def.resolve(_this.buildResponse(JSON.stringify(data.data)))
         })
@@ -21,16 +25,8 @@ SpotBot.prototype.parseReq = function (reqData) {
     return def.promise();
 };
 
-SpotBot.prototype.playSong = function() {
-    var def = HipChatBot.Deferred();
-    applescript.execFile(__dirname + '/appscr/test.scpt',  function(err, rtn) {
-        if (err) {
-            def.reject(err);
-        } else {
-            def.resolve({msg:'success', data: rtn});
-        }
-    });
-    return def.promise();
-}
+SpotBot.prototype.getCommand = function (msg) {
+    return 'play';
+};
 
 module.exports = SpotBot;
