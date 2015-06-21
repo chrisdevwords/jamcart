@@ -21,6 +21,7 @@ var SpotBot = function (slug) {
         false,
         'html'
     );
+
 };
 
 _.extend(SpotBot.prototype, HipChatBot.prototype);
@@ -34,14 +35,23 @@ SpotBot.prototype.parseReq = function (reqData) {
 
     switch (command) {
         case 'invalid track':
-            def.resolve(_this.buildResponse('Sorry, @'+ userName +'. I can only play tracks. No albums or playlists...', 'yellow'));
+            def.resolve(_this.buildResponse(
+                'Sorry, @'+ userName +'. I can only play tracks. No albums or playlists...', 'yellow'
+            ));
+            break;
         case 'play':
-            spotify.play(msg)
+            spotify.requestTrack(msg, userName)
                 .done(function (data){
                     if (data.queued) {
-                        def.resolve(_this.buildResponse('@'+ userName +' queued track:' + msg));
+                        def.resolve(_this.buildResponse(
+                            //todo this will be a track name
+                            // when async model for Spotify Track is working
+                            '@'+ userName +' queued track:' + msg
+                        ));
                     } else {
-                        def.resolve(_this.buildResponse('Now playing '+ msg));
+                        def.resolve(_this.buildResponse(
+                            'Now playing '+ msg,'. Requested by : @' + userName
+                        ));
                     }
                 })
                 .fail(function (err){

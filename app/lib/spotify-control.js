@@ -2,9 +2,31 @@ var applescript = require('applescript');
 var path = require('path');
 var Deferred = require('hipchat-bot').Deferred;
 var scripts = require('./spotify-scripts');
+var SpotifyQueue = require('./spotify-queue');
 
-var paused = true;
 var SpotifyControl = {};
+
+var _paused = true;
+var _int;
+var _queue;
+var _playlist;
+
+
+SpotifyControl.start = function (playlist) {
+    _queue = new SpotifyQueue();
+    _paused = false;
+    this.statusCheck();
+    _playlist = playlist;
+};
+
+SpotifyControl.nextTrack = function () {
+    var currentTrack = _queue.next();
+    if (currentTrack){
+        this.play(currentTrack.uri);
+    } else {
+        this.play(_playlist);
+    }
+};
 
 /**
  * plays a track (or album or playlist, etc.) in spotify
@@ -20,11 +42,33 @@ SpotifyControl.play = function (track) {
         if (err) {
             def.reject(err);
         } else {
-            console.log('play agruments??', arguments);
-            paused = false;
+            _paused = false;
             def.resolve({data: rtn, message: 'playing'});
         }
     });
+    return def.promise();
+};
+
+SpotifyControl.requestTrack = function(uri, userName) {
+    //todo this should be a proper Track Model
+    //fetches data from Spotify API
+    var def = Deferred();
+    var currentTrack = _queue.currentTrack();
+
+    _queue.add(uri, userName);
+
+    if (!currentTrack) {
+       currentTrack = _queue.next();
+       this.play(currentTrack.uri)
+           .done(function (data){
+               def.resolve(data);
+           })
+           .fail(function (err){
+              def.reject(err);
+           });
+   } else {
+       def.resolve({queued: true});
+   }
     return def.promise();
 };
 
@@ -33,7 +77,7 @@ SpotifyControl.play = function (track) {
  * @returns {boolean}
  */
 SpotifyControl.isPaused = function () {
-    return paused;
+    return _paused;
 };
 
 /**
@@ -47,8 +91,8 @@ SpotifyControl.pause = function () {
             def.reject(err);
         } else {
             console.log('pause arguments???', arguments);
-            paused = true;
-            def.resolve({paused:paused});
+            _paused = true;
+            def.resolve({paused:_paused});
         }
     });
     return def.promise();
@@ -64,8 +108,8 @@ SpotifyControl.resume = function () {
         if (err) {
             def.reject(err);
         } else {
-            paused = false;
-            def.resolve({paused:paused});
+            _paused = false;
+            def.resolve({paused:_paused});
         }
     });
     return def.promise();
@@ -73,14 +117,45 @@ SpotifyControl.resume = function () {
 
 SpotifyControl.status = function () {
     var def = Deferred();
-    applescript.execFile(__dirname + '/appscr/currentsong.scpt',  function(err, data, data2) {
+    var script = path.join(__dirname, 'appscr', 'currentsong.scpt')
+    var cb = function(err, data, data2) {
         if (err) {
             def.reject(err);
         } else {
             def.resolve({data:data, data2:data2});
         }
+    };
+    applescript.execFile(script, cb);
+    return def.promise();
+};
+
+SpotifyControl.getPlayerStatus = function () {
+    var def = Deferred();
+    var script = path.join(__dirname, 'appscr', 'playerstatus.scpt');
+    applescript.execFile(script, function (err, data) {
+        if (err) {
+            def.reject(err);
+        } else {
+            def.resolve(data);
+        }
     });
     return def.promise();
-}
+};
+
+SpotifyControl.statusCheck = function () {
+    var _this = this;
+    if (!_paused) {
+        this.getPlayerStatus()
+            .done(function (status) {
+                if (status === 'paused') {
+                    console.log('next track');
+                    _this.nextTrack();
+                }
+            })
+    }
+    _int = setTimeout(function() {
+        _this.statusCheck();
+    }, 500)
+};
 
 module.exports = SpotifyControl;

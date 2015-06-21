@@ -5,6 +5,7 @@ var path = require('path'),
     body = require('body-parser'),
     swig = require('swig'),
     routes = require('./app/routes/index'),
+    spotify = require('./app/lib/spotify-control'),
     ngrok = require('ngrok'),
     nconf = require('nconf'),
     app = express();
@@ -42,14 +43,17 @@ app.use(function (err, req, res, next) {
 });
 
 app.listen(app.get('port'), function () {
+
     var port = app.get('port');
+
     console.log('Node app is running at localhost:' + port);
+    spotify.start(nconf.get('defaultPlaylist'));
+
     ngrok.connect(port, function (err, url){
         if (err) {
             console.error('Error exposing local server via ngrok' , err);
         } else {
             nconf.set('ngrokUrl', url);
-            console.log(nconf.get('ngrokUrl'))
             console.log('Exposed via ngrok at ', url);
         }
     });
