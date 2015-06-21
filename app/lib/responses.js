@@ -15,5 +15,12 @@ module.exports = {
                 '<pre>' + slug + ' resume' + '</pre>' +
                 '&nbsp;- resumes the spotify player' +
             '</p>';
+    },
+    fail : function (userName, command, err) {
+        return '<p>' +
+                'Sorry, @' + userName + '. I couldn\'t <i>' + command + '</i>. ' +
+                'Try again. If the problem persists, contact your JamCart administrator' +
+            '</p>' +
+            '<pre>' + err.message + '</pre>';
     }
-}
+};

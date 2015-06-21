@@ -5,17 +5,18 @@ var responses = require('./responses');
 
 var SpotBot = function (slug) {
     this.slug = slug || '/spot';
-    this.queue = [];
 };
 
 _.extend(SpotBot.prototype, HipChatBot.prototype);
 
 SpotBot.prototype.parseReq = function (reqData) {
+
     var _this = this;
     var def = HipChatBot.Deferred();
     var msg = this.stripSlug(this.getMessageText(reqData), this.slug);
     var command = msg.length ? this.getCommand(reqData) : 'playing';
     var userName = this.getUserName(reqData);
+
     switch (command) {
         case 'invalid track':
             def.resolve(_this.buildResponse(
@@ -26,19 +27,27 @@ SpotBot.prototype.parseReq = function (reqData) {
             spotify.requestTrack(msg, userName)
                 .done(function (data){
                     if (data.queued) {
-                        def.resolve(_this.buildResponse(
-                            //todo this will be a track name
-                            // when async model for Spotify Track is working
-                            '@'+ userName +' queued track:' + msg
-                        ));
+                        def.resolve(
+                            _this.buildResponse(
+                                //todo this will be a track name
+                                // when async model for Spotify Track is working
+                                '@'+ userName +' queued track:' + msg
+                            )
+                        );
                     } else {
-                        def.resolve(_this.buildResponse(
-                            'Now playing '+ msg,'. Requested by : @' + userName
-                        ));
+                        def.resolve(
+                            _this.buildResponse(
+                                'Now playing '+ msg,'. Requested by : @' + userName
+                            )
+                        );
                     }
                 })
-                .fail(function (err){
-                    def.reject( _this.buildFailResponse(userName, command + msg, err));
+                .fail(function (err) {
+                    def.reject(
+                        _this.buildResponse(
+                            responses.fail(userName, command + msg, err), 'red', false, 'html'
+                        )
+                    );
                 });
             break;
         case 'pause':
@@ -49,11 +58,14 @@ SpotBot.prototype.parseReq = function (reqData) {
                     .done(function (){
                        def.resolve(_this.buildResponse('@'+ userName +' paused spotify'))
                     })
-                    .fail(function (err){
-                      def.reject( _this.buildFailResponse(userName, command, err));
+                    .fail(function (err) {
+                        def.reject(
+                            _this.buildResponse(
+                                responses.fail(userName, command, err), 'red', false, 'html'
+                            )
+                        );
                     });
             }
-
             break;
         case 'resume':
             spotify.resume()
@@ -61,7 +73,11 @@ SpotBot.prototype.parseReq = function (reqData) {
                     def.resolve(_this.buildResponse('@'+ userName +' resumed spotify'))
                 })
                 .fail(function (err){
-                    def.reject( _this.buildFailResponse(userName, command, err));
+                    def.reject(
+                        _this.buildResponse(
+                            responses.fail(userName, command, err), 'red', false, 'html'
+                        )
+                    );
                 });
             break;
         case 'help':
@@ -94,20 +110,6 @@ SpotBot.prototype.parseReq = function (reqData) {
 
     return def.promise();
 };
-
-SpotBot.prototype.buildFailResponse = function (userName, command, err) {
-    return this.buildResponse(
-        '<p>' +
-            'Sorry, @' + userName + '. I couldn\'t <i>' + command + '</i>. ' +
-            'Try again. If the problem persists, contact your JamCart administrator' +
-        '</p>' +
-        '<pre>' + err.message + '</pre>',
-        'red',
-        false,
-        'html'
-    );
-}
-
 
 SpotBot.prototype.getUserName = function (reqData) {
     return this.getMessage(reqData).from.mention_name;
