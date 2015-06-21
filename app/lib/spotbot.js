@@ -14,9 +14,8 @@ SpotBot.prototype.parseReq = function (reqData) {
     var _this = this;
     var def = HipChatBot.Deferred();
     var msg = this.stripSlug(this.getMessageText(reqData), this.slug);
-    var command = this.getCommand(reqData);
+    var command = msg.length ? this.getCommand(reqData) : 'playing';
     var userName = this.getUserName(reqData);
-
     switch (command) {
         case 'invalid track':
             def.resolve(_this.buildResponse(
@@ -72,10 +71,10 @@ SpotBot.prototype.parseReq = function (reqData) {
                 )
             );
             break;
-        case 'status' :
-            spotify.status()
+        case 'playing' :
+            spotify.nowPlaying()
                 .done(function(data){
-                    def.resolve(_this.buildResponse(data))
+                    def.resolve(_this.buildResponse(data.message))
                 })
                 .fail(function(err){
                     def.reject(_this.buildResponse(err.message, 'red'));
@@ -133,8 +132,8 @@ SpotBot.prototype.getCommand = function (reqData) {
     if (parts.indexOf('resume') > -1) {
         return 'resume';
     }
-    if (parts.indexOf('status') > -1) {
-        return 'status';
+    if (parts.indexOf('playing') > -1) {
+        return 'playing';
     }
     //todo prevent users from queing albums or playlists
     // return null or invalid request

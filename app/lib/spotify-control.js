@@ -50,6 +50,7 @@ SpotifyControl.play = function (track) {
 };
 
 SpotifyControl.requestTrack = function(uri, userName) {
+
     //todo this should be a proper Track Model
     //fetches data from Spotify API
     var def = Deferred();
@@ -115,21 +116,21 @@ SpotifyControl.resume = function () {
     return def.promise();
 };
 
-SpotifyControl.status = function () {
+SpotifyControl.nowPlaying = function () {
     var def = Deferred();
     var script = path.join(__dirname, 'appscr', 'currentsong.scpt')
     var cb = function(err, data, data2) {
         if (err) {
             def.reject(err);
         } else {
-            def.resolve({data:data, data2:data2});
+            def.resolve({message: 'Now playing ' + data  });
         }
     };
     applescript.execFile(script, cb);
     return def.promise();
 };
 
-SpotifyControl.getPlayerStatus = function () {
+SpotifyControl.getPlayerState = function () {
     var def = Deferred();
     var script = path.join(__dirname, 'appscr', 'playerstatus.scpt');
     applescript.execFile(script, function (err, data) {
@@ -145,7 +146,7 @@ SpotifyControl.getPlayerStatus = function () {
 SpotifyControl.statusCheck = function () {
     var _this = this;
     if (!_paused) {
-        this.getPlayerStatus()
+        this.getPlayerState()
             .done(function (status) {
                 if (status === 'paused') {
                     console.log('next track');
