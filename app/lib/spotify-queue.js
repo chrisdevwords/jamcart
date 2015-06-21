@@ -8,7 +8,6 @@ function SpotifyQueue () {
     return {
 
         add : function (trackUri, userName) {
-            //todo make data look up from Spotify URI
             _tracks.push({
                 uri: trackUri,
                 userName: userName
@@ -20,7 +19,7 @@ function SpotifyQueue () {
         },
 
         next : function () {
-            _currentTrack = _tracks.pop();
+            _currentTrack = _tracks.shift();
             return _currentTrack;
         },
 
