@@ -116,14 +116,28 @@ SpotBot.prototype.getUserName = function (reqData) {
 };
 
 SpotBot.prototype.getCommand = function (reqData) {
+
     var parts = this.getMessageExploded(reqData);
     var msg = this.stripSlug(this.getMessageText(reqData), this.slug);
+
     if (msg.indexOf('spotify:track') === 0) {
         //todo needs to detect a valid spotify link
         return 'play';
     }
     if (msg.indexOf('https://open.spotify.com/track/') === 0) {
         return 'play';
+    }
+    if (msg.indexOf('open.spotify.com/album/') > -1) {
+        return 'invalid track';
+    }
+    if (msg.indexOf('open.spotify.com/playlist/') > -1) {
+        return 'invalid track';
+    }
+    if (msg.indexOf('spotify:album:') > -1) {
+        return 'invalid track';
+    }
+    if (msg.indexOf(':playlist:') > -1) {
+        return 'invalid track';
     }
     if (parts.indexOf('help') > -1) {
         return 'help';
