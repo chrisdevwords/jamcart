@@ -1,27 +1,11 @@
 var HipChatBot = require('hipchat-bot');
 var _ = require('underscore');
 var spotify = require('./spotify-control');
+var responses = require('./responses');
 
 var SpotBot = function (slug) {
     this.slug = slug || '/spot';
     this.queue = [];
-    this.helpResponse = this.buildResponse(
-        '<h1>How to run your JamCart...</h1>' +
-        '<dl>' +
-        '<dt>/spot spotify:track:0lmUsjKgLFY2emmJWwolUs</dt>' +
-        '<dd>Plays a spotify track by uri or adds it to the queue if a requested track is already playing.</dd>' +
-        '<dt>' + this.slug + ' pause' + '</dt>' +
-        '<dd>' + 'Pauses the spotify player.' + '</dd>' +
-        '<dt>' + this.slug + ' resume' + '</dt>' +
-        '<dd>' + 'Resumes the spotify player' + '</dd>' +
-            //'<dt>' + '' + '</dt>' +
-            //'<dd>' + '' + '</dd>' +
-        '</dl>',
-        'purple',
-        false,
-        'html'
-    );
-
 };
 
 _.extend(SpotBot.prototype, HipChatBot.prototype);
@@ -82,7 +66,11 @@ SpotBot.prototype.parseReq = function (reqData) {
                 });
             break;
         case 'help':
-            def.resolve(_this.helpResponse);
+            def.resolve(
+                this.buildResponse(
+                    responses.help(this.slug), 'purple', false, 'html'
+                )
+            );
             break;
         case 'status' :
             spotify.status()
