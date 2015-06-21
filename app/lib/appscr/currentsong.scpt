@@ -9,7 +9,7 @@ on run
         set who to artist of current track
         set what to name of current track
         set onwhat to album of current track
-        set info to "“" & what & "”" & " by " & who & " " & "from " & onwhat
+        set info to  what & "::" & who & "::" & onwhat
       end if
     end tell
   end if
