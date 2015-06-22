@@ -11,6 +11,6 @@
 <body>
     <div class="site-wrapper">
         <h1>Jam Cart.</h1>
-        <p>This local server is accessible publicly at: <a href="{{ ngrokUrl }}">{{ ngrokUrl }}</a></p>
+        <p>HipChat endpoint: <a href="{{ ngrokUrl }}/bot">{{ ngrokUrl }}/bot</a></p>
     </div>
 </body>

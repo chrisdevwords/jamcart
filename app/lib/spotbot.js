@@ -122,6 +122,7 @@ SpotBot.prototype.getCommand = function (reqData) {
 
     if (msg.indexOf('spotify:track') === 0) {
         //todo needs to detect a valid spotify link
+        ///^spotify:track:[A-Z0-9a-z]{22}$/
         return 'play';
     }
     if (msg.indexOf('https://open.spotify.com/track/') === 0) {
@@ -151,8 +152,6 @@ SpotBot.prototype.getCommand = function (reqData) {
     if (parts.indexOf('playing') > -1) {
         return 'playing';
     }
-    //todo prevent users from queing albums or playlists
-    // return null or invalid request
     return null;
 };
 

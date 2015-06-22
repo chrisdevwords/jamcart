@@ -15,8 +15,8 @@ var _playlist;
 SpotifyControl.start = function (playlist) {
     _queue = new SpotifyQueue();
     _paused = false;
-    this.statusCheck();
     _playlist = playlist;
+    this.statusCheck();
 };
 
 SpotifyControl.nextTrack = function () {
