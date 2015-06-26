@@ -30,7 +30,12 @@ SpotifyTrack.prototype.getInfo = function () {
             if (this.data.error) {
                 def.reject(this.data.error);
             } else {
-            def.resolve(this.data);
+                this.data = JSON.parse(body);
+                if (this.data.error) {
+                    def.reject(this.data.error);
+                } else {
+                    def.resolve(this.data);
+                }
             }
         }
     };
