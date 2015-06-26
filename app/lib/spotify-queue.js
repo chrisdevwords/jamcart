@@ -6,12 +6,11 @@ function SpotifyQueue () {
     var _currentTrack;
 
     return {
-
-        add : function (trackUri, userName) {
-            _tracks.push({
-                uri: trackUri,
-                userName: userName
-            });
+        /**
+         * @param {SpotifyTrack} track
+         */
+        add : function (track) {
+            _tracks.push(track);
         },
 
         length : function () {
