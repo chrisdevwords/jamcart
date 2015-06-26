@@ -21,13 +21,17 @@ function SpotifyTrack (uri, requestedBy) {
 };
 
 SpotifyTrack.prototype.getInfo = function () {
-   var def = Deferred();
+    var def = Deferred();
     var cb = function (err, response, body){
         if (err) {
             def.reject(err);
         } else {
             this.data = JSON.parse(body);
+            if (this.data.error) {
+                def.reject(this.data.error);
+            } else {
             def.resolve(this.data);
+            }
         }
     };
     request.get('https://api.spotify.com/v1/tracks/' + this.id, cb);
@@ -35,16 +39,19 @@ SpotifyTrack.prototype.getInfo = function () {
 };
 
 SpotifyTrack.prototype.parseId = function (uri) {
+
     var segments;
+    var id;
+
     if (uri.indexOf('track:')>-1) {
         segments = uri.split('track:');
-        return segments[segments.length -1];
-    }
-    if (uri.indexOf('/') > -1) {
+        id = segments[segments.length -1];
+    } else if (uri.indexOf('/') > -1) {
         segments = uri.split('/');
-        return segments[segments.length -1];
+        id = segments[segments.length -1];
     }
-    return '';
+
+    return id;
 };
 
 module.exports = SpotifyTrack;
