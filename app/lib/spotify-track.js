@@ -21,26 +21,27 @@ function SpotifyTrack (uri, requestedBy) {
 };
 
 SpotifyTrack.prototype.getInfo = function () {
-    var def = Deferred();
-    var cb = function (err, response, body){
-        if (err) {
-            def.reject(err);
-        } else {
-            this.data = JSON.parse(body);
-            if (this.data.error) {
-                def.reject(this.data.error);
-            } else {
-                this.data = JSON.parse(body);
-                if (this.data.error) {
-                    def.reject(this.data.error);
+
+    var _this = this;
+    var data;
+
+    return new Promise(function (resolve, reject) {
+        request.get(
+            'https://api.spotify.com/v1/tracks/' + _this.id,
+            function (err, response, body) {
+                if (err) {
+                    reject(err);
                 } else {
-                    def.resolve(this.data);
+                    data = JSON.parse(body);
+                if (data.error) {
+                    reject(data.error);
+                } else {
+                    _this.data = data;
+                    resolve(_this.data);
                 }
             }
-        }
-    };
-    request.get('https://api.spotify.com/v1/tracks/' + this.id, cb);
-    return def.promise();
+        });
+    });
 };
 
 SpotifyTrack.prototype.parseId = function (uri) {

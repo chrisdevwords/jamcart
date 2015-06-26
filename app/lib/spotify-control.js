@@ -54,14 +54,15 @@ SpotifyControl.requestTrack = function(uri, userName) {
     var def = Deferred();
     var track = new SpotifyTrack(uri, userName);
     var currentTrack = _queue.currentTrack();
+    var _this = this;
 
     _queue.add(track);
 
     track.getInfo()
-        .done(function () {
+        .then(function () {
             if (!currentTrack) {
                 currentTrack = _queue.next();
-                this.play(currentTrack.uri)
+                _this.play(currentTrack.uri)
                     .done(function (){
                         def.resolve({track:track});
                     })
@@ -71,8 +72,9 @@ SpotifyControl.requestTrack = function(uri, userName) {
             } else {
                 def.resolve({queued: true, track: track});
             }
-        })
-        .fail(function(err) {
+        }, function (err) {
+            def.reject(err);
+        }).catch(function(err){
             def.reject(err);
         });
     return def.promise();

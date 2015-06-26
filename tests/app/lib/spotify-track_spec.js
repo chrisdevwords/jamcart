@@ -47,7 +47,8 @@ describe('The SpotifyTrack model', function () {
             //mock an error with sinon
             track.getInfo()
                 .then(function (resp) {
-                    console.log(resp);
+                    done();
+                }, function (err){
                     done();
                 });
         })
@@ -56,7 +57,8 @@ describe('The SpotifyTrack model', function () {
             //mock an invalid id response with sinon
             track.getInfo()
                 .then(function (resp) {
-                    console.log(resp);
+                    done();
+                }, function (err){
                     done();
                 });
         })
@@ -65,7 +67,8 @@ describe('The SpotifyTrack model', function () {
             //mock a track data response with sinon
             track.getInfo()
                 .then(function (resp) {
-                    console.log(resp);
+                    done();
+                }, function (err){
                     done();
                 });
         });
