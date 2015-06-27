@@ -1,10 +1,44 @@
+
+
+
+var artistA = {
+    external_urls : {
+        'spotify' : 'https://open.spotify.com/artist/2Hkut4rAAyrQxRdof7FVJq'
+    },
+    href : 'https://api.spotify.com/v1/artists/2Hkut4rAAyrQxRdof7FVJq',
+    id : '2Hkut4rAAyrQxRdof7FVJq',
+    name : 'Rush',
+    type : 'artist',
+    uri : 'spotify:artist:2Hkut4rAAyrQxRdof7FVJq'
+};
+
+var artistB = {
+    external_urls: {
+        spotify: 'https://open.spotify.com/artist/3UpIbyXfGzmHG6TMH4dJEk'
+    },
+    href: 'https://api.spotify.com/v1/artists/3UpIbyXfGzmHG6TMH4dJEk',
+    id: '3UpIbyXfGzmHG6TMH4dJEk',
+    name: 'Aimee Mann',
+    type: 'artist',
+    uri: 'spotify:artist:3UpIbyXfGzmHG6TMH4dJEk'
+
+};
+
 module.exports = {
 
     trackUrl: 'https://open.spotify.com/track/3PefhAnxRxxxeimzWetwnT',
     trackUri: 'spotify:track:3PefhAnxRxxxeimzWetwnT',
     trackId: '3PefhAnxRxxxeimzWetwnT',
+    trackName: 'Red Sector A',
+    trackDuration: 309146,
+    trackPopularity: 33,
     albumId: '20RfdO7fta9qlXEWTFSWuT',
     albumUri: 'spotify:album:20RfdO7fta9qlXEWTFSWuT',
+    albumUrl: 'https://api.spotify.com/v1/albums/20RfdO7fta9qlXEWTFSWuT',
+    albumName: 'Grace Under Pressure',
+    artistName : artistA.name,
+    artistA: artistA,
+    artistB: artistB,
 
     invalidId : function () {
         return JSON.stringify({
@@ -15,16 +49,17 @@ module.exports = {
         });
     },
 
-    track : function () {
+    track : function (params) {
+        params = params || {};
         return JSON.stringify({
             album : {
                 album_type : 'album',
                     available_markets : [ 'MX', 'US' ],
                     external_urls : {
-                    spotify : 'https://open.spotify.com/album/20RfdO7fta9qlXEWTFSWuT'
+                    spotify : 'https://open.spotify.com/album/' + params.albumId || this.albumId
                 },
-                href : 'https://api.spotify.com/v1/albums/20RfdO7fta9qlXEWTFSWuT',
-                id : '20RfdO7fta9qlXEWTFSWuT',
+                href : 'https://api.spotify.com/v1/albums/' + params.albumId || this.albumId,
+                id : params.albumId || this.albumId,
                 images : [
                     {
                         height : 640,
@@ -42,41 +77,31 @@ module.exports = {
                         width : 64
                     }
                 ],
-                name : 'Grace Under Pressure',
+                name : params.albumName || this.albumName,
                 type : 'album',
-                uri : 'spotify:album:20RfdO7fta9qlXEWTFSWuT'
+                uri : params.albumUri || this.albumUri
             },
-            artists : [   ,,,,
-                {
-                    external_urls : {
-                        'spotify' : 'https://open.spotify.com/artist/2Hkut4rAAyrQxRdof7FVJq'
-                    },
-                    href : 'https://api.spotify.com/v1/artists/2Hkut4rAAyrQxRdof7FVJq',
-                    id : '2Hkut4rAAyrQxRdof7FVJq',
-                    name : 'Rush',
-                    type : 'artist',
-                    uri : 'spotify:artist:2Hkut4rAAyrQxRdof7FVJq'
-                }
-            ],
+            artists : params.artists || [artistA],
             available_markets : [ 'MX', 'US' ],
             disc_number : 1,
-            duration_ms : 309146,
+            duration_ms : params.trackDuration || this.trackDuration,
             explicit : false,
             external_ids : {
-            isrc : 'USMR18430337'
-        },
+                isrc : 'USMR18430337'
+            },
             external_urls : {
-            spotify : 'https://open.spotify.com/track/3PefhAnxRxxxeimzWetwnT'
-        },
-            href : 'https://api.spotify.com/v1/tracks/3PefhAnxRxxxeimzWetwnT',
-            id : '3PefhAnxRxxxeimzWetwnT',
-            name : 'Red Sector A',
-            popularity : 33,
+                spotify : 'https://open.spotify.com/track/' + params.trackId || this.trackId
+            },
+            href : 'https://api.spotify.com/v1/tracks/' + params.trackId || this.trackId,
+            id : params.trackId || this.trackId,
+            name : params.trackName || this.trackName,
+            popularity : params.trackPopularity || this.trackPopularity,
             preview_url : 'https://p.scdn.co/mp3-preview/ac3aeaae0a17d973c6c19cbc63770252fe2b1784',
             track_number : 3,
             type : 'track',
-            uri : 'spotify:track:3PefhAnxRxxxeimzWetwnT'
-        })
+            uri : 'spotify:track:' + this.trackId
+        });
     }
 
-}
+};
+

@@ -6,8 +6,16 @@ var path = require('path');
 function SpotifyTrack (data, requestedBy) {
 
     var _uri = this.parseUri(data);
-    var _id = this.parseId(_uri);
+    var _id = this.parseId(_uri || '');
     var _this = this;
+
+    this.__defineGetter__('albumName', function () {
+        return _this.getAlbumName();
+    });
+
+    this.__defineGetter__('artistName', function () {
+        return _this.getArtistName();
+    });
 
     return _.extend(this, {
         get requestedBy () {
@@ -18,17 +26,12 @@ function SpotifyTrack (data, requestedBy) {
         },
         get id () {
             return _id;
-        },
-        get albumName () {
-            return _this.getAlbumName();
-        },
-        get artistName () {
-            return _this.getArtistName();
         }
     });
 };
 
 SpotifyTrack.prototype.getAlbumName = function() {
+    console.log('calling getAlbumName');
     if (this.album) {
         return this.album.name;
     }
@@ -75,11 +78,8 @@ SpotifyTrack.prototype.parseUri = function (data) {
         if (obj.error) {
             return data;
         }
-    } else {
-        obj = data;
     }
-
-    return obj.uri;
+    return obj ? obj.uri : undefined;
 };
 
 SpotifyTrack.prototype.parseInfo = function (data) {
