@@ -17,12 +17,12 @@ describe('The SpotifyTrack model', function () {
         });
 
         it('should correctly parse a track id from a uri', function (done) {
-            track.id.should.equal(mock.spotify.trackId)
+            track.id.should.equal(mock.spotify.trackId);
             return done();
         });
 
         it('should correctly parse a track id from a url', function (done) {
-            track.id.should.equal(mock.spotify.trackId)
+            track.id.should.equal(mock.spotify.trackId);
             return done();
         });
 
@@ -39,38 +39,48 @@ describe('The SpotifyTrack model', function () {
 
         afterEach(function (done) {
             //resotore request with sinon
+            request.get.restore();
             return done();
         });
 
         it('should handle an http error', function (done) {
-
-            //mock an error with sinon
+            var errMsg = 'Broke!';
+            sinon
+                .stub(request, 'get')
+                .yields(new Error(errMsg));
             track.getInfo()
-                .then(function (resp) {
+                .then(null, function (err){
+                    err.should.be.a.Error;
+                    err.message.should.be.a.String;
+                    err.message.should.equal(errMsg);
                     done();
-                }, function (err){
-                    done();
-                });
-        })
+                }).catch(done);
+        });
 
         it('should handle a request with an invalid id', function (done) {
             //mock an invalid id response with sinon
+            var errorJSON = JSON.parse(mock.spotify.invalidId());
+            sinon
+                .stub(request, 'get')
+                .yields(null, {status: 404}, mock.spotify.invalidId());
             track.getInfo()
-                .then(function (resp) {
+                .then(null, function (err) {
+                    err.should.be.a.Error;
+                    err.message.should.be.a.String;
+                    err.message.should.equal(errorJSON.error.message);
                     done();
-                }, function (err){
-                    done();
-                });
-        })
+                }).catch(done);
+        });
 
         it('should parse track data', function (done){
             //mock a track data response with sinon
+            sinon
+                .stub(request, 'get')
+                .yields(null, {status: 200}, mock.spotify.track());
             track.getInfo()
                 .then(function (resp) {
                     done();
-                }, function (err){
-                    done();
-                });
+                }).catch(done);
         });
-    })
+    });
 });

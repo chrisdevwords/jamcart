@@ -33,14 +33,14 @@ SpotifyTrack.prototype.getInfo = function () {
                     reject(err);
                 } else {
                     data = JSON.parse(body);
-                if (data.error) {
-                    reject(data.error);
-                } else {
-                    _this.data = data;
-                    resolve(_this.data);
+                    if (data.error) {
+                        reject(new Error(data.error.message));
+                    } else {
+                        _this.data = data;
+                        resolve(_this.data);
+                    }
                 }
-            }
-        });
+            });
     });
 };
 
