@@ -3,6 +3,8 @@ module.exports = {
     trackUrl: 'https://open.spotify.com/track/3PefhAnxRxxxeimzWetwnT',
     trackUri: 'spotify:track:3PefhAnxRxxxeimzWetwnT',
     trackId: '3PefhAnxRxxxeimzWetwnT',
+    albumId: '20RfdO7fta9qlXEWTFSWuT',
+    albumUri: 'spotify:album:20RfdO7fta9qlXEWTFSWuT',
 
     invalidId : function () {
         return JSON.stringify({

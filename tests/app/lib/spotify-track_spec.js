@@ -9,20 +9,32 @@ describe('The SpotifyTrack model', function () {
 
     describe('parsing functions', function () {
 
-        var track;
-
-        beforeEach(function (done) {
-            track = new SpotifyTrack(mock.spotify.trackUri, 'Tester');
-            return done();
-        });
-
         it('should correctly parse a track id from a uri', function (done) {
+            var track = new SpotifyTrack(mock.spotify.trackUri);
             track.id.should.equal(mock.spotify.trackId);
+            track.parseId(mock.spotify.trackUri).should.equal(mock.spotify.trackId);
             return done();
         });
 
         it('should correctly parse a track id from a url', function (done) {
+            var track = new SpotifyTrack(mock.spotify.trackUrl);
             track.id.should.equal(mock.spotify.trackId);
+            track.parseId(mock.spotify.trackUrl).should.equal(mock.spotify.trackId);
+            track.parseId(mock.spotify.trackUrl + '/').should.equal(mock.spotify.trackId);
+            return done();
+        });
+
+        it('should not parse an id if passed an album uri', function (done) {
+            var name = 'Tester';
+            var track = new SpotifyTrack(mock.spotify.albumUri, name);
+            (track.id === undefined).should.be.true;
+            return done();
+        });
+
+        it('should have a property indicating who requested it', function (done) {
+            var name = 'Tester';
+            var track = new SpotifyTrack(mock.spotify.trackUrl, name);
+            track.requestedBy.should.equal(name);
             return done();
         });
 

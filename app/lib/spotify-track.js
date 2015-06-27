@@ -1,7 +1,7 @@
 
 var _ = require('underscore');
 var request = require('request');
-var Deferred = require('hipchat-bot').Deferred;
+var path = require('path');
 
 function SpotifyTrack (uri, requestedBy) {
 
@@ -46,15 +46,12 @@ SpotifyTrack.prototype.getInfo = function () {
 
 SpotifyTrack.prototype.parseId = function (uri) {
 
-    var segments;
     var id;
 
-    if (uri.indexOf('track:')>-1) {
-        segments = uri.split('track:');
-        id = segments[segments.length -1];
+    if (uri.indexOf('track:') > -1) {
+        id = uri.split('track:').slice(-1).pop();
     } else if (uri.indexOf('/') > -1) {
-        segments = uri.split('/');
-        id = segments[segments.length -1];
+        id = path.parse(uri).name;
     }
 
     return id;
