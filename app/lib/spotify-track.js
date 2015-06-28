@@ -31,7 +31,6 @@ function SpotifyTrack (data, requestedBy) {
 };
 
 SpotifyTrack.prototype.getAlbumName = function() {
-    console.log('calling getAlbumName');
     if (this.album) {
         return this.album.name;
     }

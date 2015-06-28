@@ -5,27 +5,25 @@ function SpotifyQueue () {
     var _tracks = [];
     var _currentTrack;
 
-    return {
-        /**
-         * @param {SpotifyTrack} track
-         */
-        add : function (track) {
+    return _.extend(this, {
+
+        add: function (track) {
             _tracks.push(track);
         },
 
-        length : function () {
+        length: function () {
             return _tracks.length;
         },
 
-        next : function () {
+        next: function () {
             _currentTrack = _tracks.shift();
             return _currentTrack;
         },
 
-        currentTrack : function () {
+        currentTrack: function () {
             return _currentTrack;
         }
-    }
+    });
 }
 
 module.exports = SpotifyQueue;
